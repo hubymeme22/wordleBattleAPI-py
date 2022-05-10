@@ -1,4 +1,4 @@
-from Auth import SessionHandler
+from Sessions import SessionHandler
 
 class SingleSessionHandler(SessionHandler):
 	def __init__(self, fpath: str, numOfWordsToGuess: int) -> None:
