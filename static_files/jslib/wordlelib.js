@@ -67,14 +67,3 @@ class InterpreterWordleAPI {
 		this.token = window.localStorage.getItem('token');
 	}
 }
-
-tokenRequestSingle();
-WordleObj = new InterpreterWordleAPI();
-
-// to delay the whole thing so we can retrieve
-// the token without problems
-setTimeout(() => {
-	WordleObj.retrieveToken();
-	WordleObj.guess('house');
-
-}, 500);
