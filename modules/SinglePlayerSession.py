@@ -6,12 +6,13 @@ class SingleSessionHandler(SessionHandler):
 
 	def guess(self, token : str, answer : str):
 		if (token in self.userMap):
-			output = self.userMap[token].guess(answer)
+			userWordle = self.getWordle(token)
+			output = userWordle.guess(answer)
 			print(f'[User {token}] Answer status : {output}')
 
 			# meaning, the answer is correct
 			if ((0 not in output) and (1 not in output)):
-				self.userMap[token].proceed()
+				userWordle.proceed()
 
 			return output
 

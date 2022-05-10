@@ -9,6 +9,9 @@ import random
 import string
 
 
+# Handles user and their specified wordle object
+# the 'key' also acts as user 'token' which identifies
+# the user and the game he/she's playing.
 class UserHandler:
 	def __init__(self, fpath : str, numOfWordsToGuess : int) -> None:
 		self.fpath = fpath
@@ -21,6 +24,12 @@ class UserHandler:
 		if (keyGen not in self.userMap):
 			return keyGen
 		return self.generateKey()
+
+	# retrieves the wordle object of the specified user
+	def getWordle(self, token : str) -> Wordle:
+		if (token in self.userMap):
+			return self.userMap[token]
+		return None
 
 	# registers the token and maps on empty Wordle object
 	def register(self, key : str):
