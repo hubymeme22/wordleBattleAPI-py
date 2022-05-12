@@ -147,8 +147,16 @@ function handshake() {
 		console.log('Agreed upon key : ' + response);
 		window.localStorage.setItem('agreed_key', response);
 
-		if (response == 'None')
-			console.error('The tokens in the localstorage is corrupted, it is advised to reset again.');
+		if (response == 'None') {
+			console.error('The tokens in the localstorage is corrupted.');
+			console.log('Flushing and requesting again...');
+
+			flush_enctokens();
+			tokenRequestMulti();
+
+			// delay some ms, to load the localStorage
+			setTimeout(handshake, 500);
+		}
 	});
 }
 
