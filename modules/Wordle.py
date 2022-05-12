@@ -161,7 +161,7 @@ class Wordle(TextFileLoader):
 		return self.wordCheckers[0].checkWord(word[:answerWordLength])
 
 	def proceed(self) -> None:
-		self.wordCheckers[1:]
+		self.wordCheckers = self.wordCheckers[1:]
 
 
 if __name__ == '__main__':
