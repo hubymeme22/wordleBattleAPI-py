@@ -5,14 +5,21 @@ By:
 	Hubert F. Espinola I
 	Angelika T. Amatus
 '''
-from flask import Flask, send_from_directory
+from flask import Flask, send_from_directory, request
 import sys
 
 sys.path.append('./modules')
 from SinglePlayerSession import SingleSessionHandler
+from EncryptedSession import EncSession, UserDB
 
 
+# database for user information
+UserDatabase = UserDB()
+
+# Session handlers
 SingleSession = SingleSessionHandler('sample.txt', 2)
+EncryptedSession = EncSession('sample.txt', 2)
+
 app = Flask(__name__)
 
 ####################
@@ -49,9 +56,33 @@ def resetCurrentGame(token):
 	SingleSession.userMap[token].resetCurrent()
 	return 'OK'
 
+##############################
+#   Encrypted GET Requests   #
+##############################
+''' Gets token for encrypted communications '''
+@app.route('/encrypted/request/token')
+def getEncryptedToken():
+	token, P = EncryptedSession.getToken()
+	return token + ':' + str(P)
+
 #####################
 #   POST Requests   #
 #####################
+''' Posts data for diffie hellman key exchange '''
+@app.route('/encrypted/handshake/<string:token>', methods=['POST'])
+def diffieHandshake(token):
+	userMixedVal = request.form.get('PAQ')
+	QValue = request.form.get('Q')
+
+	if ((userMixedVal != None) and (QValue != None)):
+		userMixedVal = int(userMixedVal)
+		QValue = int(QValue)
+		BMixed = EncryptedSession.handshake(token, userMixedVal, QValue)
+		print(f'The calculated Bmixed is : {BMixed}')
+		return str(BMixed)
+
+	return 'UnknownParamError'
+
 
 #####################
 #     Main part     #
