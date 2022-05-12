@@ -50,11 +50,10 @@ def guessAnsSingle(token, answer):
 	output = SingleSession.guess(token, answer)
 	return str(output)
 
-''' User requests for reset for the game '''
-@app.route('/single/reset/<string:token>')
-def resetCurrentGame(token):
-	SingleSession.userMap[token].resetCurrent()
-	return 'OK'
+''' User requests for trying to solve the word again '''
+@app.route('/single/try_again/<string:token>')
+def tryAgain(token):
+	return SingleSession.tryAgain(token)
 
 ##############################
 #   Encrypted GET Requests   #
