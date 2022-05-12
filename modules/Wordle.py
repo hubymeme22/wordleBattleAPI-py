@@ -3,7 +3,7 @@ WordleBattle is a wordle-like game which supports single and multiplayer.
 By: Hubert F. Espinola I
 '''
 from os.path import isfile
-from random import choice, shuffle
+from random import choice
 
 '''
 Loads the text contained in the file, each word is separated
@@ -162,17 +162,3 @@ class Wordle(TextFileLoader):
 
 	def proceed(self) -> None:
 		self.wordCheckers = self.wordCheckers[1:]
-
-
-if __name__ == '__main__':
-	Battle = Wordle(r'C:\Users\HueHueberry\OneDrive\Desktop\Advanced OOP Project\webapp\modules\sample.txt', 3, 3)
-
-	print('The current length of word is :', Battle.getCurrentWordLength())
-	while True:
-		sample = input('Guess : ')
-		output = Battle.guess(sample)
-		print(output)
-
-		if (output == []):
-			print('Reseting the game')
-			Battle.resetCurrent()
