@@ -1,11 +1,3 @@
-/*
-Added Here so the other file don't need to be imported
-*/
-
-// will be used as key holder for encryption
-var keyHandler = null;
-
-
 /////////////////////////////////
 //    Diffie Encryption part   //
 ////////////////////////////////
