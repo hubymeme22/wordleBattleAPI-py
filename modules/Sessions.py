@@ -38,15 +38,3 @@ class UserHandler:
 			self.userMap[key] = Wordle(self.fpath, self.numOfWordsToGuess, 5)
 
 		print('KEY REGISTRATION DONE')
-
-
-# Interface class where you can modify on how you
-# will use the guess method
-# Handles the user session
-class SessionHandler(UserHandler):
-	def __init__(self, fpath: str, numOfWordsToGuess : int) -> None:
-		super().__init__(fpath, numOfWordsToGuess)
-
-	# checks the answer of the user
-	def guess(self, key : str, answer : str) -> list:
-		pass
