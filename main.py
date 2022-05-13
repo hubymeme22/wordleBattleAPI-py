@@ -17,8 +17,8 @@ from EncryptedSession import EncSession, UserDB
 UserDatabase = UserDB()
 
 # Session handlers
-SingleSession = SingleSessionHandler('sample.txt', 2)
-EncryptedSession = EncSession('sample.txt', 2)
+SingleSession = SingleSessionHandler('sample.txt', 4)
+EncryptedSession = EncSession('sample.txt', 4)
 
 app = Flask(__name__)
 
@@ -54,6 +54,19 @@ def guessAnsSingle(token, answer):
 @app.route('/single/try_again/<string:token>')
 def tryAgain(token):
 	return SingleSession.tryAgain(token)
+
+''' User requests to scramble the set of words to solve '''
+@app.route('/single/reset/<string:token>')
+def resetWord(token):
+	return SingleSession.reset(token)
+
+''' User checks if the token is registered '''
+@app.route('/single/isregistered/<string:token>')
+def isRegistered(token):
+	registered = SingleSession.isRegistered(token)
+	if (registered):
+		return 'yes'
+	return 'no'
 
 ##############################
 #   Encrypted GET Requests   #
