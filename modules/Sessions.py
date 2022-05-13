@@ -13,10 +13,12 @@ import string
 # the 'key' also acts as user 'token' which identifies
 # the user and the game he/she's playing.
 class UserHandler:
-	def __init__(self, fpath : str, numOfWordsToGuess : int) -> None:
+	def __init__(self, fpath : str, numOfWordsToGuess : int, attempts : int=6) -> None:
 		self.fpath = fpath
 		self.numOfWordsToGuess = numOfWordsToGuess
-		self.userMap = {'key' : Wordle(fpath, numOfWordsToGuess, 5)}
+		self.attempts = attempts
+
+		self.userMap = {'key' : Wordle(fpath, numOfWordsToGuess, attempts)}
 
 	# generates key available for the session
 	def generateKey(self) -> str:
@@ -35,6 +37,12 @@ class UserHandler:
 	def register(self, key : str):
 		if (key not in self.userMap):
 			print('KEY IS REGISTERED!')
-			self.userMap[key] = Wordle(self.fpath, self.numOfWordsToGuess, 5)
+			self.userMap[key] = Wordle(self.fpath, self.numOfWordsToGuess, self.attempts)
 
 		print('KEY REGISTRATION DONE')
+
+	# checks if the token is registered
+	def isRegistered(self, key : str) -> bool:
+		if (key in self.userMap):
+			return True
+		return False
