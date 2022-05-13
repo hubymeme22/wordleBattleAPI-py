@@ -103,13 +103,13 @@ class Checker(AvailableLettersChecker):
 		self.attempts = 0
 
 	# checks the word provided
-	def checkWord(self, word : str) -> dict:
+	def checkWord(self, word : str) -> list:
 		word = word.upper()
 		output = [0 for i in range(len(word))]
 
 		if (self.attemptFlag and self.attempts >= self.maxAttempt):
 			print('Max attempts exceeded')
-			return []
+			return [-2]
 
 		cpyCurrent = list(self.currentWord)
 		for i in range(len(word)):
@@ -133,7 +133,7 @@ Simple implementation of wordle mechanics
 	attempts : max number of guessing
 '''
 class Wordle(TextFileLoader):
-	def __init__(self, filename: str='', wordnums : int=0, attempts : int=4) -> None:
+	def __init__(self, filename: str='', wordnums : int=0, attempts : int=6) -> None:
 		super().__init__(filename)
 
 		if (wordnums > len(self.filedata)):
