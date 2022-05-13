@@ -111,6 +111,22 @@ function tokenRequestSingle() {
 	}
 }
 
+// checks if the current token in the localstorage is registered
+// response = yes: the current token is registered
+// response = no: the current token is not registered
+function isTokenRegistered(callback=(response) => {}) {
+	const token = window.localStorage.getItem('token');
+	var host = window.location.origin + '/single/isregistered/' + token;
+	packedRequest_GET(host, (response) => {
+		// reset the token on localstorage
+		if (response === 'no') {
+			window.localStorage.removeItem('token');
+			setTimeout(tokenRequestSingle, 500);
+		}
+	})
+}
+
+
 // finalize the encryption using this handshake
 function handshake() {
 	const PValue = window.localStorage.getItem('P');
@@ -176,6 +192,18 @@ function flush_token() {
 ////////////////////
 //   Wordle API   //
 ////////////////////
+// requests to retry the same problem again
+function retryCurrent() {
+	var token = window.localStorage.getItem('token');
+	if (token != null){
+		var host = window.location.origin + '/single/reset/' + token;
+		packedRequest_GET(host, (data) => {
+			console.log(data);
+			console.log(typeof data);
+		});
+	}
+}
+
 class SingleWordleAPI {
 	constructor() {
 		this.alphabet = {
@@ -200,11 +228,22 @@ class SingleWordleAPI {
 		}
 	}
 
+	// returns: list of array with values:
+	// [2] if the corresponding index of the answer is correct
+	// [1] if the letter
 	guess(wordGuess, callback=(arr_data) => {}) {
+		// recheck if the token is already okay but cannot retrieve properly
+		if (this.token === null) {
+			isTokenRegistered(response => {
+				if (response == 'yes')
+					this.retrieveToken();
+			});
+		}
+
 		var host = window.location.origin;
 		host += '/single/guess/' + this.token + '/' + wordGuess;
 
-  		packedRequest_GET(host, (data) => {
+		packedRequest_GET(host, (data) => {
 			this.interpretAPI(wordGuess, data);
 			const output = JSON.parse(data);
 			callback(output);
