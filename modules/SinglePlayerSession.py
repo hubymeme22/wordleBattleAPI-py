@@ -12,7 +12,8 @@ class SingleSessionHandler(UserHandler):
 			print(f'[User {token}] Answer status : {output}')
 
 			# meaning, the answer is correct
-			if ((0 not in output) and (1 not in output)):
+			count_correct = output.count(2)
+			if (count_correct == len(output)):
 				userWordle.proceed()
 
 			# after proceeding, if the size of the word is 0
