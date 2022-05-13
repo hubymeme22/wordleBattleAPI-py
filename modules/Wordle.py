@@ -109,7 +109,7 @@ class Checker(AvailableLettersChecker):
 
 		if (self.attemptFlag and self.attempts >= self.maxAttempt):
 			print('Max attempts exceeded')
-			return [-2, 0]
+			return [-2]
 
 		cpyCurrent = list(self.currentWord)
 		for i in range(len(word)):
