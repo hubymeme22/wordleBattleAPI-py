@@ -257,4 +257,13 @@ class SingleWordleAPI {
 	retrieveToken() {
 		this.token = window.localStorage.getItem('token');
 	}
+
+	// makes sure that the object's token is same as the
+	// object's token
+	fixLocalObjToken() {
+		const token = window.localStorage.getItem('token');
+		if (this.token != token) {
+			this.token = token;
+		}
+	}
 }
