@@ -1,8 +1,9 @@
 from Sessions import UserHandler
+from Wordle import Wordle
 
 class SingleSessionHandler(UserHandler):
-	def __init__(self, fpath: str, numOfWordsToGuess: int) -> None:
-		super().__init__(fpath, numOfWordsToGuess)
+	def __init__(self, fpath: str, numOfWordsToGuess: int, attempts : int=6) -> None:
+		super().__init__(fpath, numOfWordsToGuess, attempts)
 
 	def guess(self, token : str, answer : str) -> list:
 		if (token in self.userMap):
@@ -19,10 +20,8 @@ class SingleSessionHandler(UserHandler):
 			# returns specific unique list for indication
 			if (len(userWordle.wordCheckers) <= 0):
 				return [-1]
-
 			return output
 
-		print(f'[User {token}] Answer {answer} cannot be checked because the token is not registered.')
 		return []
 
 	# call this again to retry to solve the current word again
@@ -31,5 +30,12 @@ class SingleSessionHandler(UserHandler):
 		if (token in self.userMap):
 			userWordle = self.getWordle(token)
 			userWordle.resetCurrent()
+			return '1'
+		return '0'
+
+	# resest and gives a new set of words for this token
+	def reset(self, token : str) -> str:
+		if (token in self.userMap):
+			self.userMap[token] = Wordle(self.fpath, self.numOfWordsToGuess)
 			return '1'
 		return '0'
