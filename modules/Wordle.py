@@ -93,8 +93,9 @@ class Checker(AvailableLettersChecker):
 
 	# removes the character matched to avoid
 	# confusion in matching the characters
-	def __remove_chr(self, cpyCurrent : list, character : str):
-		cpyCurrent.remove(character)
+	def __remove_chr(self, cpyCurrent : list, idx : int):
+		# replace with special character to avoid index conflict
+		cpyCurrent[idx] = chr(0)
 		return cpyCurrent
 
 	# resets the word to be guessed
@@ -104,7 +105,7 @@ class Checker(AvailableLettersChecker):
 
 	# checks the word provided
 	def checkWord(self, word : str) -> list:
-		word = word.upper()
+		word = list(word.upper())
 		output = [0 for i in range(len(word))]
 
 		if (self.attemptFlag and self.attempts >= self.maxAttempt):
@@ -112,15 +113,23 @@ class Checker(AvailableLettersChecker):
 			return [-2]
 
 		cpyCurrent = list(self.currentWord)
+
+		# loop for checking the right position first
+		used_index = []
 		for i in range(len(word)):
-			if (word[i] == self.currentWord[i]):
-				cpyCurrent = self.__remove_chr(cpyCurrent, word[i])
-				self.rightPosition(word[i])
+			if (word[i] == cpyCurrent[i]):
+				cpyCurrent = self.__remove_chr(cpyCurrent, i)
+				used_index.append(i)
 				output[i] = 2
 
-			elif (word[i] in self.currentWord[i]):
-				cpyCurrent = self.__remove_chr(cpyCurrent, word[i])
-				cpyCurrent = self.wrongPosition(word[i])
+		# loop for checking the wrong position
+		for i in range(len(word)):
+			if (i in used_index):
+				continue
+
+			if (word[i] in cpyCurrent):
+				idx = cpyCurrent.index(word[i])
+				cpyCurrent = self.__remove_chr(cpyCurrent, idx)
 				output[i] = 1
 
 		self.attempts += 1
