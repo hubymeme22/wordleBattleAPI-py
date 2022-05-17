@@ -36,8 +36,8 @@ function getMixedVal() {
 
 // gets the P^BmodQ of the server
 function calculateKey(otherValue) {
-	const QValue = window.localStorage.getItem('Q');
-	const myValue = window.localStorage.getItem('my_val');
+	const QValue = BigInt(window.localStorage.getItem('Q'));
+	const myValue = BigInt(window.localStorage.getItem('my_val'));
 
 	if (QValue == null) console.error('No QValue found in localstorage');
 	if (myValue == null) console.error('No Generated Value found in localstorage');
@@ -160,9 +160,6 @@ function handshake() {
 	var forged_request = `PAQ=${myMixedValue}&Q=${QValue}`;
 
 	packedRequest_POST(host, forged_request, (response) => {
-		console.log('Agreed upon key : ' + response);
-		window.localStorage.setItem('agreed_key', response);
-
 		if (response == 'None') {
 			console.error('The tokens in the localstorage is corrupted.');
 			console.log('Flushing and requesting again...');
@@ -172,6 +169,9 @@ function handshake() {
 
 			// delay some ms, to load the localStorage
 			setTimeout(handshake, 500);
+		} else {
+			const calculatedKey = calculateKey(BigInt(response));
+			window.localStorage.setItem('agreed_key', calculatedKey);	
 		}
 	});
 }
@@ -196,11 +196,16 @@ function flush_token() {
 function retryCurrent() {
 	var token = window.localStorage.getItem('token');
 	if (token != null){
-		var host = window.location.origin + '/single/reset/' + token;
-		packedRequest_GET(host, (data) => {
-			console.log(data);
-			console.log(typeof data);
-		});
+		var host = window.location.origin + '/single/try_again/' + token;
+		packedRequest_GET(host);
+	}
+}
+
+function scramble() {
+	var token = window.localStorage.getItem('token');
+	if (token != null) {
+		var host = window.location.origin + '/single/retry/' + token;
+		packedRequest_GET(host);
 	}
 }
 
