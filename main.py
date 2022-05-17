@@ -6,6 +6,7 @@ By:
 	Angelika T. Amatus
 '''
 from flask import Flask, send_from_directory, request
+import json
 import sys
 
 sys.path.append('./modules')
@@ -19,6 +20,7 @@ UserDatabase = UserDB()
 # Session handlers
 SingleSession = SingleSessionHandler('sample.txt', 4)
 EncryptedSession = EncSession('sample.txt', 4)
+EncryptedSession.connectLocalDB(UserDatabase)
 
 app = Flask(__name__)
 
@@ -90,11 +92,36 @@ def diffieHandshake(token):
 		userMixedVal = int(userMixedVal)
 		QValue = int(QValue)
 		BMixed = EncryptedSession.handshake(token, userMixedVal, QValue)
-		print(f'The calculated Bmixed is : {BMixed}')
 		return str(BMixed)
 
 	return 'UnknownParamError'
 
+''' User logs in the given credentials and maps it on the token provided '''
+@app.route('/encrypted/login/<string:token>', methods=['POST'])
+def login(token):
+	username = json.loads(request.form.get('uno'))
+	password = json.loads(request.form.get('anji'))
+
+	# convert to character and rejoin
+	username = [chr(i) for i in username]
+	password = [chr(i) for i in password]
+	username = ''.join(username)
+	password = ''.join(password)
+
+	# checks if the field are okay and the token is registered
+	if ((username != None) and (password != None) and EncryptedSession.isEncTokenRegistered(token)):
+		key = EncryptedSession.getKey(token)
+
+		# decrypts the credentials
+		username = EncSession.decrypt(token, key, username)
+		password = EncSession.decrypt(token, key, password)
+
+		# checks if the username exists
+		if (EncryptedSession.localUserDB.checkUser(username)):
+			isRegistered = EncryptedSession.login(username, password, token)
+			if (isRegistered): return 'successful'
+
+	return 'unsucessful'
 
 #####################
 #     Main part     #
