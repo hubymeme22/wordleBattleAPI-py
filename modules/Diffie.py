@@ -22,11 +22,11 @@ class Diffie:
 
 	def calculateKey(self, othersMixedValue : int):
 		if (self.calculatedKey == None):
-			self.calculatedKey = pow(othersMixedValue, self.myMixedVal, self.QValue)		
+			self.calculatedKey = pow(othersMixedValue, self.myValue, self.QValue)		
 		return self.calculatedKey
 
 	def getCurrentKey(self):
-		return self.otherVal
+		return self.calculatedKey
 
 	@staticmethod
 	def getRandomPrime():
