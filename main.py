@@ -123,6 +123,32 @@ def login(token):
 
 	return 'unsucessful'
 
+''' Registers the specified username and password '''
+@app.route('/encrypted/register/<string:token>', methods=['POST'])
+def registerUser(token):
+	username = json.loads(request.form.get('uno'))
+	password = json.loads(request.form.get('anji'))
+
+	username = [chr(i) for i in username]
+	password = [chr(i) for i in password]
+	username = ''.join(username)
+	password = ''.join(password)
+
+	# checks if the parameters are valid and user does not exist
+	if ((username != None) and (password != None) and EncryptedSession.isEncTokenRegistered(token)):
+		# decrypts the credentials
+		key = EncryptedSession.getKey(token)
+		username = EncSession.decrypt(token, key, username)
+		password = EncSession.decrypt(token, key, password)
+
+		if (UserDatabase.checkUser(username)):
+			return 'usererror'
+		else:
+			UserDatabase.register(username, password)
+			return 'successful'
+
+	return 'unsucessful'
+
 #####################
 #     Main part     #
 #####################
