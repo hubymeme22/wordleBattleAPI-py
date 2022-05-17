@@ -159,16 +159,33 @@ class EncSession(Authentication):
 			mixed_value = diffie.getMixedVal()
 
 			# registers the diffie to the token
+			diffie.calculateKey(PAQ)
 			self.tokenDiffiePair[token] = diffie
+
+			# register this to the parent normal Session
+			super().register(token)
 			return mixed_value
 
 		return None
 
+	# checks if the encrypted token is registered
+	def isEncTokenRegistered(self, token : str) -> bool:
+		if (token in self.tokenDiffiePair):
+			return True
+		return False
+
+	# gets the diffie key of the current token
+	def getKey(self, token : str) -> int:
+		if (self.isEncTokenRegistered(token)):
+			return self.tokenDiffiePair[token].getCurrentKey()
+		return 0
+
+
+	# FOR NOW uses basic xor encryption
+	@staticmethod
+	def encrypt(token : str, key : int, creds : str) -> bytes:
+		return ''.join([chr( ord(creds[i]) ^ ord(token[i % 32]) ^ key ) for i in range(len(creds))])
 
 	@staticmethod
-	def encrypt(token : str, creds : str) -> bytes:
-		return creds
-
-	@staticmethod
-	def decrypt(token : str, creds : str) -> bytes:
-		return creds
+	def decrypt(token : str, key : int, creds : str) -> bytes:
+		return EncSession.encrypt(token, key, creds)
