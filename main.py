@@ -22,6 +22,12 @@ SingleSession = SingleSessionHandler('sample.txt', 4)
 EncryptedSession = EncSession('sample.txt', 4)
 EncryptedSession.connectLocalDB(UserDatabase)
 
+
+# "factored out" process that are needed (to shorten code):
+# 
+def checkUserPassTokenValidity(username : str, password : str, token : str):
+	return (username != None) and (password != None) and EncryptedSession.isEncTokenRegistered(token)
+
 app = Flask(__name__)
 
 ####################
@@ -109,7 +115,7 @@ def login(token):
 	password = ''.join(password)
 
 	# checks if the field are okay and the token is registered
-	if ((username != None) and (password != None) and EncryptedSession.isEncTokenRegistered(token)):
+	if (checkUserPassTokenValidity(username, password, token)):
 		key = EncryptedSession.getKey(token)
 
 		# decrypts the credentials
@@ -135,7 +141,7 @@ def registerUser(token):
 	password = ''.join(password)
 
 	# checks if the parameters are valid and user does not exist
-	if ((username != None) and (password != None) and EncryptedSession.isEncTokenRegistered(token)):
+	if (checkUserPassTokenValidity(username, password, token)):
 		# decrypts the credentials
 		key = EncryptedSession.getKey(token)
 		username = EncSession.decrypt(token, key, username)
@@ -148,6 +154,22 @@ def registerUser(token):
 			return 'successful'
 
 	return 'unsucessful'
+
+''' An account user guesses the answer '''
+@app.route('/encrypted/guess', methods=['POST'])
+def encryptedGuess(token):
+	userToken = request.form.get('token')
+
+	if (EncryptedSession.isEncTokenRegistered(userToken)):
+		key = EncryptedSession.getKey(userToken)
+		encryptedAnswer = json.loads(request.form.get('answer'))
+		encryptedAnswer = ''.join([chr(i) for i in encryptedAnswer])
+
+		answer = EncSession.decrypt(userToken, key, encryptedAnswer)
+		result = EncryptedSession.guess(userToken, answer)
+		return str(result)
+
+	return str([])
 
 #####################
 #     Main part     #
