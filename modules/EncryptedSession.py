@@ -1,4 +1,4 @@
-from Sessions import UserHandler
+from SinglePlayerSession import SingleSessionHandler
 from Diffie import Diffie
 
 '''
@@ -90,7 +90,7 @@ AUTHENTICATION - Authenticates and maps the token to the user
 slight modification and integration to encryption makes this class
 more secured.
 '''
-class Authentication(UserHandler):
+class Authentication(SingleSessionHandler):
 	__instance = None
 
 	def __init__(self, fpath: str, numOfWordsToGuess: int, userDatabase : UserDB=None) -> None:
@@ -109,6 +109,11 @@ class Authentication(UserHandler):
 	def setUserToken(self, username : str, token : str):
 		# checks if the user is registered first in the localUserDatabase
 		if (self.localUserDB.checkUser(username)):
+			# check if an existing token is registered to this user
+			# pass this session to the new token
+			if (self.userMap[username] != None):
+				self.switchTokenWordle(token, self.getUserToken(username))
+
 			self.userTokenMap[username] = token
 			super().register(token)
 
