@@ -41,6 +41,16 @@ class UserHandler:
 
 		print('KEY REGISTRATION DONE')
 
+	# assign current token's wordle to the new token
+	def switchTokenWordle(self, oldToken : str, newToken : str) -> bool:
+		if (oldToken in self.userMap):
+			currentTokenWordle = self.getWordle(oldToken)
+			self.userMap[newToken] = currentTokenWordle
+
+			self.userMap.pop(oldToken)
+			return True
+		return False
+
 	# checks if the token is registered
 	def isRegistered(self, key : str) -> bool:
 		if (key in self.userMap):
