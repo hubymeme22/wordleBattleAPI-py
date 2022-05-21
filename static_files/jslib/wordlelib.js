@@ -189,6 +189,82 @@ function flush_token() {
 	window.localStorage.removeItem('token');
 }
 
+/////////////////////////////
+//  Credentials and login  //
+/////////////////////////////
+// default encryption function that will be used
+function xorEncrypt(data) {
+	var key = parseInt(window.localStorage.getItem('agreed_key'));
+	var token = window.localStorage.getItem('enc_token');
+
+	var new_data = [];
+	if (key != null && token != null) {
+		for (var i = 0; i < data.length; i++)
+			new_data.push( key ^ token.charCodeAt(i % token.length) ^ data.charCodeAt(i));
+	}
+
+	return JSON.stringify(new_data);
+}
+
+// login the credentials given
+function loginCreds(username, password, encCallback=xorEncrypt, responseCallback=(response) => {}) {
+	const encrypted_user = encCallback(username);
+	const encrypted_pass = encCallback(password);
+	const enc_token = window.localStorage.getItem('enc_token');
+
+	const pckt_structure = `uno=${encrypted_user}&anji=${encrypted_pass}`;
+	const host = window.location.origin + `/encrypted/login/${enc_token}`;
+
+	if (enc_token != null)
+		packedRequest_POST(host, pckt_structure, (response) => {
+			if (response == 'successful')
+				window.localStorage.setItem('user', username);
+
+			responseCallback(response);
+		});
+	else
+		console.error('enc_token is not established');
+}
+
+// registers the credentials given
+function registerCreds(username, password, encCallback=xorEncrypt, responseCallback=(response) => {}) {
+	const encrypted_user = encCallback(username);
+	const encrypted_pass = encCallback(password);
+	const enc_token = window.localStorage.getItem('enc_token');
+
+	const pckt_structure = `uno=${encrypted_user}&anji=${encrypted_pass}`;
+	const host = window.location.origin + `/encrypted/register/${enc_token}`;
+
+	if (enc_token != null)
+		packedRequest_POST(host, pckt_structure, (response) => {
+			responseCallback(response);
+		});
+	else
+		console.error('enc_token is not established');
+}
+
+function logoutCreds() {
+	flush_enctokens();
+	tokenRequestMulti();
+	handshake();
+}
+
+//////////////////////////////
+//   Encrypted Wordle API   //
+//////////////////////////////
+function userGuess(answer, callback=(response) => {}) {
+	var username = window.localStorage.getItem('user');
+	var host = window.location.origin + `/${username}/guess`;
+	const token = window.localStorage.getItem('enc_token');
+
+	if (username != null && token != null) {
+		const pckt_structure = `token=${token}&answer=${answer}`;
+		packedRequest_POST(host, pckt_structure, (response) => {
+			callback(response);
+		});
+	}
+}
+
 ////////////////////
 //   Wordle API   //
 ////////////////////
