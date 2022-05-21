@@ -119,7 +119,9 @@ class Authentication(SingleSessionHandler):
 
 	# gets the token for this user
 	def getUserToken(self, username : str) -> str:
-		return self.userTokenMap[username]
+		if (username in self.userTokenMap):
+			return self.userTokenMap[username]
+		return ''
 
 	# gets the wordle object for this user
 	def getUserWordle(self, username : str) -> str:
