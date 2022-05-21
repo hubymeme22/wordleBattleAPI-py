@@ -156,20 +156,16 @@ def registerUser(token):
 	return 'unsucessful'
 
 ''' An account user guesses the answer '''
-@app.route('/encrypted/guess', methods=['POST'])
-def encryptedGuess(token):
-	userToken = request.form.get('token')
+@app.route('/<string:username>/guess', methods=['POST'])
+def encryptedGuess(username):
+	token = request.form.get('token')
+	userAnswer = request.form.get('answer')
+	userToken = EncryptedSession.getUserToken(username)
 
-	if (EncryptedSession.isEncTokenRegistered(userToken)):
-		key = EncryptedSession.getKey(userToken)
-		encryptedAnswer = json.loads(request.form.get('answer'))
-		encryptedAnswer = ''.join([chr(i) for i in encryptedAnswer])
-
-		answer = EncSession.decrypt(userToken, key, encryptedAnswer)
-		result = EncryptedSession.guess(userToken, answer)
-		return str(result)
-
-	return str([])
+	if (userToken == token):
+		return str( EncryptedSession.guess(token, userAnswer) )
+	else:
+		return str([])
 
 #####################
 #     Main part     #
