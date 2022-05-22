@@ -108,5 +108,5 @@ Other than these, the game also introduces some poor security (weak encryption a
 <br/>
 
 # Authors
-- Hubert F. Espinola I
-- Angelika T. Amatus
+- Amatus, Angelika T.
+- Espinola I, Hubert F.
