@@ -171,5 +171,10 @@ def encryptedGuess(username):
 #     Main part     #
 #####################
 if __name__ == '__main__':
-	app.debug = True
-	app.run('localhost', 5050)
+	if (len(sys.argv) >= 2):
+		ip = sys.argv[1]
+		port = int(sys.argv[2])
+
+		app.run(ip, port)
+	else:
+		print('Usage: main.py <APIServerAddress> <APIServerPort>')
