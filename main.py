@@ -85,6 +85,17 @@ def getEncryptedToken():
 	token, P = EncryptedSession.getToken()
 	return token + ':' + str(P)
 
+''' Requests to shuffle the wordlist of the current user '''
+@app.route('/<string:username>/<string:token>/reset')
+def userReset(username, token):
+	# compares the user token to the given token
+	userToken = EncryptedSession.getUserToken(username)
+
+	if (userToken == token):
+		return EncryptedSession.reset(token)
+
+	return 'unsucessful'
+
 #####################
 #   POST Requests   #
 #####################
