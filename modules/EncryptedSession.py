@@ -4,7 +4,8 @@ from Diffie import Diffie
 '''
 USER INFORMATION
 contains.. you know, user information. Special
-about this is that, this is where the
+about this is that, this is where the settings and control
+on the user is done
 '''
 class UserInfo:
 	def __init__(self, username : str, password : str) -> None:
