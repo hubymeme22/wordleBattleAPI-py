@@ -18,7 +18,7 @@ Example:
 
 # Basic Implementation
 
-The Webpage codes can be added to the directory `/static_files` so all the HTML, CSS, and JS files can be accessed through the API server.	
+The Webpage codes must be added to the directory `/static_files` so all the HTML, CSS, and JS files can be accessed through the API server. Also, so that we can use `wordlelib.js`.
 
 All the processes in this API are designed to be implemented in JavaScript and instead of providing the lower level logic behind the API, we packed all of the logic into higher level JavaScript library called `wordlelib.js`. For further details wordlelib.js can be seen [here](.).
 
@@ -32,18 +32,20 @@ handshake();
 
 // REGISTERS the supplied username and password
 registerCreds('example_username', 'example_password', undefined, (response) => {
-	if (response === 'successful')
+	if (response === 'successful') {
 		// credentials are registered
-	else
+	} else {
 		// invalid credentials (username already exists)
+	}
 });
 
 // LOGIN the supplied credentials
 loginCreds('example_username', 'example_password', undefined, (response) => {
-	if (response === 'sucessful')
+	if (response === 'sucessful') {
 		// logs in w/out problem/s
-	else
+	} else {
 		// invalid username/password
+	}
 });
 
 // GUESS the word provided by the server (in this case we use: Wordle as answer)
@@ -80,20 +82,9 @@ Saving the code above as whatever.js, on `/static_files` directory and implement
 </head>
 ```
 
-If the code is not saved on `/static_files` directory, then implement it on html as:
-
-```html
-<head>
-	<script src="http://[APIServerAddress]:[port]/jslib/wordlelib.js"></script>
-	<script src="./whatever.js"></script>
-</head>
-```
-
-<br/>
-
 # Game Mechanics
 
-WordleBattle is obviously similar to the game Wordle where you have to guess a word and if you guess the wrong answer, the game provides you a hint which letters in your answer provided is: 1.) correct but in wrong position 2.) in correct position 3.) not used.
+WordleBattle is obviously similar to the game [Wordle](https://www.nytimes.com/games/wordle/index.html) where you have to guess a word and if you guess the wrong answer, the game provides you a hint which letters in your answer provided is: 1.) correct but in wrong position 2.) in correct position 3.) not used.
 
 In WordleBattle, each guessed answer counts a point and this point will be registered in your account. Gaining more points give you more trophy thus, placing you higher in the scoreboard. Yes... That's just it.
 
