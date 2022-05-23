@@ -1,6 +1,6 @@
 /////////////////////////////////
 //    Diffie Encryption part   //
-////////////////////////////////
+/////////////////////////////////
 // generates a random prime P
 function getRandomPrime() {
 	// local method array
@@ -76,6 +76,7 @@ function packedRequest_POST(host, data, callback=(data) => {}) {
 		})
 }
 
+
 /////////////////////////////
 //   Tokens and Sessions   //
 /////////////////////////////
@@ -96,36 +97,6 @@ function tokenRequestMulti() {
 		});
 	}
 }
-
-// requests token for a single player
-// (for keeping track of which game is being played)
-function tokenRequestSingle() {
-	var host = window.location.origin;
-	var modified = host + '/request/stoken/';
-
-	var currentToken = window.localStorage.getItem('token');
-	if (currentToken === null) {
-		packedRequest_GET(modified, (data) => {
-			window.localStorage.setItem('token', data);
-		});
-	}
-}
-
-// checks if the current token in the localstorage is registered
-// response = yes: the current token is registered
-// response = no: the current token is not registered
-function isTokenRegistered(callback=(response) => {}) {
-	const token = window.localStorage.getItem('token');
-	var host = window.location.origin + '/single/isregistered/' + token;
-	packedRequest_GET(host, (response) => {
-		// reset the token on localstorage
-		if (response === 'no') {
-			window.localStorage.removeItem('token');
-			setTimeout(tokenRequestSingle, 500);
-		}
-	})
-}
-
 
 // finalize the encryption using this handshake
 function handshake() {
@@ -176,17 +147,12 @@ function handshake() {
 	});
 }
 
-
 function flush_enctokens() {
 	window.localStorage.removeItem('enc_token');
 	window.localStorage.removeItem('P');
 	window.localStorage.removeItem('Q');
 	window.localStorage.removeItem('my_val');
 	window.localStorage.removeItem('agreed_key');
-}
-
-function flush_token() {
-	window.localStorage.removeItem('token');
 }
 
 /////////////////////////////
@@ -249,9 +215,12 @@ function logoutCreds() {
 	handshake();
 }
 
-//////////////////////////////
-//   Encrypted Wordle API   //
-//////////////////////////////
+
+////////////////////
+//   Game Needs   //
+////////////////////
+
+// obviously guesses the answer
 function userGuess(answer, callback=(response) => {}) {
 	var username = window.localStorage.getItem('user');
 	var host = window.location.origin + `/${username}/guess`;
@@ -265,86 +234,17 @@ function userGuess(answer, callback=(response) => {}) {
 	}
 }
 
-////////////////////
-//   Wordle API   //
-////////////////////
-// requests to retry the same problem again
-function retryCurrent() {
-	var token = window.localStorage.getItem('token');
-	if (token != null){
-		var host = window.location.origin + '/single/try_again/' + token;
-		packedRequest_GET(host);
-	}
-}
+// shuffles the words from the wordlist
+function shuffleWordlist(callback=(data) => {}) {
+	const username = window.localStorage.getItem('user');
+	const token = window.localStorage.getItem('enc_token');
 
-function scramble() {
-	var token = window.localStorage.getItem('token');
-	if (token != null) {
-		var host = window.location.origin + '/single/retry/' + token;
-		packedRequest_GET(host);
-	}
-}
-
-class SingleWordleAPI {
-	constructor() {
-		this.alphabet = {
-			'A' : 0, 'B' : 0, 'C' : 0, 'D' : 0, 'E' : 0,
-			'F' : 0, 'G' : 0, 'H' : 0, 'I' : 0, 'J' : 0,
-			'K' : 0, 'L' : 0, 'M' : 0, 'N' : 0, 'O' : 0,
-			'P' : 0, 'Q' : 0, 'R' : 0, 'S' : 0, 'T' : 0,
-			'V' : 0, 'W' : 0, 'X' : 0, 'Y' : 0, 'Z' : 0
-		};
-
-		this.token = window.localStorage.getItem('token');
-		this.host  = window.location.origin;
-	}
-
-	interpretAPI(input, outputAPI) {
-		input = input.toUpperCase();
-		var output = JSON.parse(outputAPI);
-
-		for (var i = 0; i < output.length; i++) {
-			var chr = input.charAt(i);
-			this.alphabet[chr] = output[i];
-		}
-	}
-
-	// returns: list of array with values:
-	// [2] if the corresponding index of the answer is correct
-	// [1] if the letter
-	guess(wordGuess, callback=(arr_data) => {}) {
-		// recheck if the token is already okay but cannot retrieve properly
-		if (this.token === null) {
-			isTokenRegistered(response => {
-				if (response == 'yes')
-					this.retrieveToken();
-			});
-		}
-
-		var host = window.location.origin;
-		host += '/single/guess/' + this.token + '/' + wordGuess;
-
+	if (username != null) {
+		var host = window.location.origin + `/${username}/${token}/reset`;
 		packedRequest_GET(host, (data) => {
-			this.interpretAPI(wordGuess, data);
-			const output = JSON.parse(data);
-			callback(output);
+			callback(data);
 		});
-	}
-
-	getAlphabetStatus() {
-		return this.alphabet;
-	}
-
-	retrieveToken() {
-		this.token = window.localStorage.getItem('token');
-	}
-
-	// makes sure that the object's token is same as the
-	// object's token
-	fixLocalObjToken() {
-		const token = window.localStorage.getItem('token');
-		if (this.token != token) {
-			this.token = token;
-		}
+	} else {
+		console.error('Cannot reset... not logged in properly!');
 	}
 }
