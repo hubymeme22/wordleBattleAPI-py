@@ -65,7 +65,7 @@ The array in response, as said, contains the information about the user's answer
 in some cases, the response returns different array value which also has different meaning:
 -	[] - empty array means that the user is either not logged in properly, or the token is not registered. (you can re-use the `tokenRegister()` and `handshake()`, and login the account again to resolve this issue)
 -	[-1] - this means that all the words in the in the current account are already been solved (this will happen if there are less words listed in sample.txt).
--	[-2] - this means that the max attempt to guess the word has already done.
+-	[-2] - this means that the max attempt to guess the word has already done. If this occured, we can let the user answer the same words in the wordlist but shuffled by calling the function: `shuffleWordlist(callback=(response) => {})`. 'response' returns '1' if the shuffle is executed correctly (no errors).
 
 **NOTE:** If the word is guessed correctly (results in array with all 2s as content [2,2,2,...]), the server will automatically pops the old word from the list, so the next guess attempts that will be done will be registered on the next word from the list.
 
