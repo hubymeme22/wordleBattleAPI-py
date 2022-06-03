@@ -148,6 +148,10 @@ class Wordle(TextFileLoader):
 		if (wordnums > len(self.filedata)):
 			raise Exception('[LoadingError] Number of word exceeds the number of words inside the file')
 
+		self.points = 0					# current point of the user
+		self.numAttempts = 0			# number of attempts of the current user made
+		self.wordState = []				# answer state (can be loaded back)
+
 		self.wordCheckers  = []
 		for i in range(wordnums):
 			generatedWord = choice(self.filedata)
@@ -162,12 +166,39 @@ class Wordle(TextFileLoader):
 		self.wordCheckers[0].reset()
 
 	def guess(self, word : str) -> list:
+		# check if there's no words left to be guessed
+		if (len(self.wordCheckers) == 0):
+			return [-3]
+
 		# to secure that the word has the matched length
 		answerWordLength = self.getCurrentWordLength()
+		arr = []
 		if (len(word) <= answerWordLength):
-			return self.wordCheckers[0].checkWord(word)
+			arr = self.wordCheckers[0].checkWord(word)
+		else:
+			targetWord = word[:answerWordLength]
+			arr = self.wordCheckers[0].checkWord(targetWord)
 
-		return self.wordCheckers[0].checkWord(word[:answerWordLength])
+		# added process to save the players
+		# last game state
+		if ((1 not in arr) and(0 not in arr)):
+			self.points += 1
+			self.wordState = []
+			self.numAttempts = 0
+		else:
+			self.wordState.append(word)
+			self.numAttempts += 1
+
+		return arr
+
+
+	def getSavedGameState(self) -> dict:
+		json_format = {
+			'points'   : self.points,
+			'attempts' : self.numAttempts,
+			'state'    : self.wordState
+		}
+		return json_format
 
 	def proceed(self) -> None:
 		self.wordCheckers = self.wordCheckers[1:]
