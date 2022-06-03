@@ -76,6 +76,12 @@ def isRegistered(token):
 		return 'yes'
 	return 'no'
 
+''' User requests for the last game state saves by the server '''
+@app.route('/lastGameState/<string:token>')
+def getLastGameState(token):
+	gameStateData = EncryptedSession.getTokenGameState(token)
+	return json.dumps(gameStateData)
+
 ##############################
 #   Encrypted GET Requests   #
 ##############################

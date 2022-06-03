@@ -248,3 +248,13 @@ function shuffleWordlist(callback=(data) => {}) {
 		console.error('Cannot reset... not logged in properly!');
 	}
 }
+
+// requests to get the last saved game status
+function getSavedGameStatus(callback=(json_data) => {}) {
+	const token = window.localStorage.getItem('enc_token');
+
+	var host = window.location.origin + `/lastGameState/${token}`;
+	packedRequest_GET(host, (data) => {
+		callback(data);
+	});
+}

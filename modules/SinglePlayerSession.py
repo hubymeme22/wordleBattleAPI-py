@@ -25,6 +25,13 @@ class SingleSessionHandler(UserHandler):
 
 		return []
 
+	def getTokenGameState(self, token : str):
+		if (self.isRegistered(token)):
+			tokenWordle = self.getWordle(token)
+			savedState = tokenWordle.getSavedGameState()
+			return savedState
+		return {}
+
 	# call this again to retry to solve the current word again
 	# returns '1' if there's no problem in reseting
 	def tryAgain(self, token : str) -> str:
