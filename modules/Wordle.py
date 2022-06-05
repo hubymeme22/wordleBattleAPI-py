@@ -175,9 +175,11 @@ class Wordle(TextFileLoader):
 		arr = []
 		if (len(word) <= answerWordLength):
 			arr = self.wordCheckers[0].checkWord(word)
+			self.wordState.append(word)
 		else:
 			targetWord = word[:answerWordLength]
 			arr = self.wordCheckers[0].checkWord(targetWord)
+			self.wordState.append(targetWord)
 
 		# added process to save the players
 		# last game state
@@ -186,7 +188,6 @@ class Wordle(TextFileLoader):
 			self.wordState = []
 			self.numAttempts = 0
 		else:
-			self.wordState.append(word)
 			self.numAttempts += 1
 
 		return arr
