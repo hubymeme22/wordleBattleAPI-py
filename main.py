@@ -35,7 +35,7 @@ app = Flask(__name__)
 ####################
 @app.route('/')
 def index():
-	return 'Hello world!'
+	return send_from_directory('static_files', 'main.html')
 
 @app.route('/<path:path>')
 def staticFileHandler(path):
@@ -183,6 +183,21 @@ def encryptedGuess(username):
 		return str( EncryptedSession.guess(token, userAnswer) )
 	else:
 		return str([])
+
+
+###############################################
+#  Add your modified requests here (personal) #
+###############################################
+from os import path
+
+@app.route('/loader/<string:fpath>')
+def redirector(fpath):
+	loader_code = open('static_files/loader.html', 'r').read()
+	if (path.isfile(path.join('static_files', fpath))):
+		return loader_code.replace('first_interface.html', fpath)
+
+	return 'meh'
+
 
 #####################
 #     Main part     #
