@@ -149,7 +149,7 @@ class Wordle(TextFileLoader):
 			raise Exception('[LoadingError] Number of word exceeds the number of words inside the file')
 
 		self.points = 0					# current point of the user
-		self.numAttempts = 0			# number of attempts of the current user made
+		self.respState = []				# the state of server's response on the last word
 		self.wordState = []				# answer state (can be loaded back)
 
 		self.wordCheckers  = []
@@ -186,9 +186,9 @@ class Wordle(TextFileLoader):
 		if ((1 not in arr) and(0 not in arr)):
 			self.points += 1
 			self.wordState = []
-			self.numAttempts = 0
+			self.respState = []
 		else:
-			self.numAttempts += 1
+			self.respState.append(arr)
 
 		return arr
 
@@ -196,7 +196,7 @@ class Wordle(TextFileLoader):
 	def getSavedGameState(self) -> dict:
 		json_format = {
 			'points'   : self.points,
-			'attempts' : self.numAttempts,
+			'resp'     : self.respState,
 			'state'    : self.wordState
 		}
 		return json_format
