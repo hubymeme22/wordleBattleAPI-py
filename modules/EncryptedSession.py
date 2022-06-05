@@ -112,8 +112,8 @@ class Authentication(SingleSessionHandler):
 		if (self.localUserDB.checkUser(username)):
 			# check if an existing token is registered to this user
 			# pass this session to the new token
-			if (username not in self.userMap):
-				self.switchTokenWordle(token, self.getUserToken(username))
+			if (token not in self.userMap):
+				self.switchTokenWordle(self.getUserToken(username), token)
 
 			self.userTokenMap[username] = token
 			super().register(token)
