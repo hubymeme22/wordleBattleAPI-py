@@ -1,3 +1,4 @@
 modules/__pycache__/
 static_files/index.html
 static_files/css
+__pycache__
