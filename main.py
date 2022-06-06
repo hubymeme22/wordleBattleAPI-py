@@ -102,6 +102,16 @@ def userReset(username, token):
 
 	return 'unsucessful'
 
+''' Requests to retry the current word '''
+@app.route('/<string:username>/<string:token>/retry')
+def retryWord(username, token):
+	# compares the user token to the given token
+	userToken = EncryptedSession.getUserToken(username)
+
+	if (userToken == token):
+		return EncryptedSession.tryAgain(token)
+	return str(-1)
+
 #####################
 #   POST Requests   #
 #####################
