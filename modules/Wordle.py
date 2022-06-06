@@ -152,6 +152,7 @@ class Wordle(TextFileLoader):
 		self.respState = []				# the state of server's response on the last word
 		self.wordState = []				# answer state (can be loaded back)
 
+		self.wordDictionary = self.filedata.copy()
 		self.wordCheckers  = []
 		for i in range(wordnums):
 			generatedWord = choice(self.filedata)
@@ -169,6 +170,11 @@ class Wordle(TextFileLoader):
 		# check if there's no words left to be guessed
 		if (len(self.wordCheckers) == 0):
 			return [-3]
+
+		# check if the word guessed is in the dictionary
+		print(self.wordDictionary)
+		if (word not in self.wordDictionary):
+			return [-4]
 
 		# to secure that the word has the matched length
 		answerWordLength = self.getCurrentWordLength()
