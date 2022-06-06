@@ -11,16 +11,17 @@ class SingleSessionHandler(UserHandler):
 			output = userWordle.guess(answer)
 			print(f'[User {token}] Answer status : {output}')
 
+			# after proceeding, if the size of the word is 0
+			# this means that all the challenge is completed
+			# returns specific unique list for indication
+			if (len(userWordle.wordCheckers) <= 0):
+				return [-3]
+
 			# meaning, the answer is correct
 			count_correct = output.count(2)
 			if (count_correct == len(output)):
 				userWordle.proceed()
 
-			# after proceeding, if the size of the word is 0
-			# this means that all the challenge is completed
-			# returns specific unique list for indication
-			if (len(userWordle.wordCheckers) <= 0):
-				return [-1]
 			return output
 
 		return []
