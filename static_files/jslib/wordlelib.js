@@ -153,6 +153,7 @@ function flush_enctokens() {
 	window.localStorage.removeItem('Q');
 	window.localStorage.removeItem('my_val');
 	window.localStorage.removeItem('agreed_key');
+	window.localStorage.removeItem('user');
 }
 
 /////////////////////////////
@@ -247,6 +248,17 @@ function shuffleWordlist(callback=(data) => {}) {
 	} else {
 		console.error('Cannot reset... not logged in properly!');
 	}
+}
+
+// requests the server to retry the same word
+function retryWord(callback=(data) => {}) {
+	const username = window.localStorage.getItem('user');
+	const token = window.localStorage.getItem('enc_token');
+
+	const host = window.location.host + `/${username}/${token}/retry`;
+	packedRequest_GET(host, (data) => {
+		callback(data);
+	})
 }
 
 // requests to get the last saved game status
