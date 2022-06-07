@@ -18,8 +18,8 @@ from EncryptedSession import EncSession, UserDB
 UserDatabase = UserDB()
 
 # Session handlers
-SingleSession = SingleSessionHandler('sample.txt', 4)
-EncryptedSession = EncSession('sample.txt', 4)
+SingleSession = SingleSessionHandler('sample.txt')
+EncryptedSession = EncSession('sample.txt')
 EncryptedSession.connectLocalDB(UserDatabase)
 
 

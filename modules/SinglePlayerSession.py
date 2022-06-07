@@ -2,7 +2,7 @@ from Sessions import UserHandler
 from Wordle import Wordle
 
 class SingleSessionHandler(UserHandler):
-	def __init__(self, fpath: str, numOfWordsToGuess: int, attempts : int=6) -> None:
+	def __init__(self, fpath: str, numOfWordsToGuess: int=0, attempts : int=6) -> None:
 		super().__init__(fpath, numOfWordsToGuess, attempts)
 
 	def guess(self, token : str, answer : str) -> list:

@@ -12,12 +12,14 @@ by a new line.
 class TextFileLoader:
 	def __init__(self, filename : str='') -> None:
 		self.filedata = []
+		self.wordSize = 0
 
 		if (filename != ''):
 			self.loadTextFile(filename)
 
 	def loadTextFile(self, filename : str) -> None:
 		self.filedata = TextFileLoader.loadParse(filename)
+		self.wordSize = len(self.filedata)
 
 	@staticmethod
 	def loadParse(filename) -> None:
@@ -147,6 +149,10 @@ class Wordle(TextFileLoader):
 
 		if (wordnums > len(self.filedata)):
 			raise Exception('[LoadingError] Number of word exceeds the number of words inside the file')
+		
+		if (wordnums == 0):
+			wordnums = self.wordSize
+
 
 		self.points = 0					# current point of the user
 		self.respState = []				# the state of server's response on the last word

@@ -144,7 +144,7 @@ class Authentication(SingleSessionHandler):
 Session handler for authentication and the actual game for multiplayer
 '''
 class EncSession(Authentication):
-	def __init__(self, fpath: str, numOfWordsToGuess: int, userDatabase: UserDB = None) -> None:
+	def __init__(self, fpath: str, numOfWordsToGuess: int=0, userDatabase: UserDB = None) -> None:
 		super().__init__(fpath, numOfWordsToGuess, userDatabase)
 		self.pendingTokens = {'token' : 13}
 		self.tokenDiffiePair = {'token' : Diffie(13, 13)}
