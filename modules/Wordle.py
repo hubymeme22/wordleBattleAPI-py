@@ -164,6 +164,8 @@ class Wordle(TextFileLoader):
 		return 0
 
 	def resetCurrent(self) -> None:
+		self.respState = []
+		self.wordState = []
 		self.wordCheckers[0].reset()
 
 	def guess(self, word : str) -> list:
