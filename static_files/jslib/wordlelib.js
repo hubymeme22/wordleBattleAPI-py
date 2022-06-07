@@ -255,7 +255,7 @@ function retryWord(callback=(data) => {}) {
 	const username = window.localStorage.getItem('user');
 	const token = window.localStorage.getItem('enc_token');
 
-	const host = window.location.host + `/${username}/${token}/retry`;
+	const host = window.location.origin + `/${username}/${token}/retry`;
 	packedRequest_GET(host, (data) => {
 		callback(data);
 	})
