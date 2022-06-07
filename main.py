@@ -82,6 +82,11 @@ def getLastGameState(token):
 	gameStateData = EncryptedSession.getTokenGameState(token)
 	return json.dumps(gameStateData)
 
+''' User requests for the username rank list '''
+@app.route('/rank-list')
+def getUserRankList():
+	return str(EncryptedSession.getUserRankList())
+
 ##############################
 #   Encrypted GET Requests   #
 ##############################
