@@ -180,7 +180,6 @@ class Wordle(TextFileLoader):
 			return [-3]
 
 		# check if the word guessed is in the dictionary
-		print(self.wordDictionary)
 		if (word not in self.wordDictionary):
 			return [-4]
 
