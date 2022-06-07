@@ -1,5 +1,6 @@
 from SinglePlayerSession import SingleSessionHandler
 from Diffie import Diffie
+from Wordle import Wordle
 
 '''
 USER INFORMATION
@@ -127,7 +128,7 @@ class Authentication(SingleSessionHandler):
 		return ''
 
 	# gets the wordle object for this user
-	def getUserWordle(self, username : str) -> str:
+	def getUserWordle(self, username : str) -> Wordle:
 		return super().getWordle( self.getUserToken(username) )
 
 	# logs in the user and registers its token to the account
@@ -190,6 +191,21 @@ class EncSession(Authentication):
 			return self.tokenDiffiePair[token].getCurrentKey()
 		return 0
 
+	# gets the ranking
+	def getUserRankList(self):
+		usernames = self.localUserDB.users.keys()
+		rankList = []
+
+		for user in usernames:
+			userWordle = self.getUserWordle(user)
+			if (userWordle == None):
+				rankList.append((user, 0))
+			else:
+				rankList.append((user, userWordle.points))
+
+		rankList   = sorted(rankList, key=lambda x : x[1], reverse=True)
+		userArray  = [i[0] for i in rankList]
+		return userArray
 
 	# FOR NOW uses basic xor encryption
 	@staticmethod
