@@ -22,7 +22,7 @@ Access the page with: `http://10.0.0.22:5454/`
 
 The webpage code must be added to the directory `/static_files` so all the HTML, CSS, and JS files can be accessed through the API server. Also, so that we can use `wordlelib.js`.
 
-All the processes in this API are designed to be implemented in JavaScript and instead of providing the lower level logic behind the API, we packed all of the logic into a higher level JavaScript library called `wordlelib.js`. For further details wordlelib.js can be seen [here](.).
+All the processes in this API are designed to be implemented in JavaScript and instead of providing the lower level logic behind the API, we packed all of the logic into a higher level JavaScript library called `wordlelib.js`. For further details wordlelib.js can be seen [here](static_files/jslib/README.md).
 
 For now, basic registeration, login, and answer guessing can be done by:
 
